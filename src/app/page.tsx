@@ -1,7 +1,11 @@
-import { caller } from "@/trpc/server";
+"use client";
 
-const Page = async () => {
-  const users = await caller.getUsers();
+import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+
+const Page = () => {
+  const trpc = useTRPC();
+  const { data: users } = useQuery(trpc.getUsers.queryOptions());
 
   return (
     <div>
