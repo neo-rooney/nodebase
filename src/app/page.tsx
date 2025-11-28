@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useTRPC } from "@/trpc/client";
 
@@ -17,7 +18,7 @@ const Page = () => {
   const create = useMutation(
     trpc.createWorkflow.mutationOptions({
       onSuccess: () => {
-        queryClient.invalidateQueries(trpc.getWorkflows.queryOptions());
+        toast.success("Job queued");
       },
     }),
   );
