@@ -24,8 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import { authClient } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
 
 const loginSchema = z.object({
   email: z.email("이메일 형식이 올바르지 않습니다."),
@@ -44,7 +43,21 @@ export function LoginForm() {
     },
   });
   const onSubmit = async (values: LoginFormValues) => {
-    console.log(values);
+    await authClient.signIn.email(
+      {
+        email: values.email,
+        password: values.password,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          router.push("/");
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+      },
+    );
   };
   const isPending = form.formState.isSubmitting;
 
