@@ -12,6 +12,9 @@
     "dev:all": "mprocs"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.53",
+    "@ai-sdk/google": "^2.0.44",
+    "@ai-sdk/openai": "^2.0.77",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-neon": "^7.0.0",
     "@prisma/client": "^7.0.0",
@@ -45,6 +48,7 @@
     "@trpc/client": "^11.7.2",
     "@trpc/server": "^11.7.2",
     "@trpc/tanstack-react-query": "^11.7.2",
+    "ai": "^5.0.106",
     "better-auth": "^1.4.3",
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
@@ -56,7 +60,7 @@
     "inngest": "^3.46.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.554.0",
-    "next": "15.5.4",
+    "next": "^15.5.7",
     "next-themes": "^0.4.6",
     "react": "19.1.0",
     "react-day-picker": "^9.11.1",
