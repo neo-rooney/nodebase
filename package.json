@@ -12,7 +12,9 @@
     "dev:all": "mprocs"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.53",
     "@ai-sdk/google": "^2.0.44",
+    "@ai-sdk/openai": "^2.0.77",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/adapter-neon": "^7.0.0",
     "@prisma/client": "^7.0.0",
