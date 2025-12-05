@@ -20,6 +20,9 @@ const Page = () => {
       onSuccess: () => {
         toast.success("AI Job queued");
       },
+      onError: (error) => {
+        toast.error(error.message);
+      },
     }),
   );
 
