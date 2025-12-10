@@ -92,6 +92,8 @@ model Workflow {
 
 enum NodeType {
   INITIAL
+  MAMUAL_TRIGGER
+  HTTP_REQUEST
 }
 
 model Node {
