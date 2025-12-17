@@ -1,0 +1,18 @@
+import { manualTriggerExecutor } from "@/feature/triggers/components/menual-trigger/executor";
+import { NodeType } from "@/generated/prisma/enums";
+import { httpRequestExecutor } from "../components/http-request/executor";
+import type { NodeExecutor } from "../types";
+
+export const executorRegistry: Record<NodeType, NodeExecutor> = {
+  [NodeType.MAMUAL_TRIGGER]: manualTriggerExecutor,
+  [NodeType.HTTP_REQUEST]: httpRequestExecutor,
+  [NodeType.INITIAL]: manualTriggerExecutor,
+};
+
+export const getExecutor = (nodeType: NodeType): NodeExecutor => {
+  const executor = executorRegistry[nodeType];
+  if (!executor) {
+    throw new Error(`Executor for node type ${nodeType} not found`);
+  }
+  return executor;
+};
