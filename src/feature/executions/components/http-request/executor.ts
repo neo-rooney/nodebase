@@ -3,6 +3,7 @@ import ky, { type Options as KyOptions } from "ky";
 import type { NodeExecutor } from "@/feature/executions/types";
 
 type HttpRequestData = {
+  variableName?: string;
   endpoint?: string;
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: string;
@@ -17,6 +18,11 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   // TODO: loading state tor http request
   if (!data.endpoint) {
     throw new NonRetriableError("HTTP Request node: No endpoint configured");
+  }
+  if (!data.variableName) {
+    throw new NonRetriableError(
+      "HTTP Request node: No variable name configured",
+    );
   }
   const result = await step.run("http-request", async () => {
     const endpoint = data.endpoint!;
@@ -35,13 +41,22 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
       ? await response.json()
       : await response.text();
 
-    return {
-      ...context,
+    const responsePayload = {
       httpResponse: {
         status: response.status,
         statusText: response.statusText,
         data: responseData,
       },
+    };
+    if (data.variableName) {
+      return {
+        ...context,
+        [data.variableName]: responsePayload,
+      };
+    }
+    return {
+      ...context,
+      ...responsePayload,
     };
   });
 
