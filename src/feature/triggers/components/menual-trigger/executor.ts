@@ -1,4 +1,5 @@
 import type { NodeExecutor } from "@/feature/executions/types";
+import { manualTriggerChannel } from "@/inngest/channels/menual-trigger";
 
 type ManualTriggerData = Record<string, unknown>;
 
@@ -6,12 +7,22 @@ export const manualTriggerExecutor: NodeExecutor<ManualTriggerData> = async ({
   nodeId,
   context,
   step,
+  publish,
 }) => {
-  // TODO: loading state tor menual trigger
+  await publish(
+    manualTriggerChannel().status({
+      nodeId,
+      status: "loading",
+    }),
+  );
 
   const result = await step.run("manual-trigger", async () => context);
 
-  //  TODO: success state tor menual trigger
-
+  await publish(
+    manualTriggerChannel().status({
+      nodeId,
+      status: "success",
+    }),
+  );
   return result;
 };
