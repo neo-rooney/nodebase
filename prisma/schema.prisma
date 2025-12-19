@@ -95,6 +95,7 @@ enum NodeType {
   MAMUAL_TRIGGER
   HTTP_REQUEST
   GOOGLE_FORM_TRIGGER
+  STRIPE_TRIGGER
 }
 
 model Node {
