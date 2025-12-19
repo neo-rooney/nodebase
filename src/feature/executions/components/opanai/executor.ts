@@ -1,9 +1,9 @@
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import type { NodeExecutor } from "@/feature/executions/types";
-import { geminiExecutionChannel } from "@/inngest/channels/gemini";
+import { openaiExecutionChannel } from "@/inngest/channels/openai";
 import type { AVAILABLE_MODELS } from "./dialog";
 
 Handlebars.registerHelper("json", (context) => {
@@ -12,14 +12,14 @@ Handlebars.registerHelper("json", (context) => {
   return safeString;
 });
 
-type GeminiData = {
+type OpenaiData = {
   variableName: string;
   model: (typeof AVAILABLE_MODELS)[number];
   systemPrompt?: string;
   userPrompt: string;
 };
 
-export const geminiExecutor: NodeExecutor<GeminiData> = async ({
+export const openaiExecutor: NodeExecutor<OpenaiData> = async ({
   nodeId,
   context,
   step,
@@ -27,14 +27,14 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
   publish,
 }) => {
   await publish(
-    geminiExecutionChannel().status({
+    openaiExecutionChannel().status({
       nodeId,
       status: "loading",
     }),
   );
   if (!data.variableName) {
     await publish(
-      geminiExecutionChannel().status({
+      openaiExecutionChannel().status({
         nodeId,
         status: "error",
       }),
@@ -48,7 +48,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
 
   if (!data.userPrompt) {
     await publish(
-      geminiExecutionChannel().status({
+      openaiExecutionChannel().status({
         nodeId,
         status: "error",
       }),
@@ -60,14 +60,14 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
 
   try {
     //TODO: 키값 유저입력으로 추후 변경
-    const credentialValue = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    const credentialValue = process.env.OPENAI_API_KEY;
 
-    const google = createGoogleGenerativeAI({
+    const openai = createOpenAI({
       apiKey: credentialValue,
     });
 
-    const { steps } = await step.ai.wrap("gemini-generate-text", generateText, {
-      model: google(data.model || ""),
+    const { steps } = await step.ai.wrap("openai-generate-text", generateText, {
+      model: openai(data.model || ""),
       system: systemPrompt,
       prompt: userPrompt,
       experimental_telemetry: {
@@ -81,7 +81,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
       steps[0].content[0].type === "text" ? steps[0].content[0].text : "";
 
     await publish(
-      geminiExecutionChannel().status({
+      openaiExecutionChannel().status({
         nodeId,
         status: "success",
       }),
@@ -95,7 +95,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
     };
   } catch (error) {
     await publish(
-      geminiExecutionChannel().status({
+      openaiExecutionChannel().status({
         nodeId,
         status: "error",
       }),

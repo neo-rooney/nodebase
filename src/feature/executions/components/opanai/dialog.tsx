@@ -32,14 +32,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
-interface GeminiDialogProps {
+interface OpenaiDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: z.infer<typeof formSchema>) => void;
-  defaultValues?: Partial<GeminiFormValues>;
+  defaultValues?: Partial<OpenaiFormValues>;
 }
 
-export const AVAILABLE_MODELS = ["gemini-2.5-flash"] as const;
+export const AVAILABLE_MODELS = ["gpt-4o-mini"] as const;
 
 const formSchema = z.object({
   variableName: z
@@ -54,14 +54,14 @@ const formSchema = z.object({
   userPrompt: z.string().min(1, "User prompt is required"),
 });
 
-export type GeminiFormValues = z.infer<typeof formSchema>;
+export type OpenaiFormValues = z.infer<typeof formSchema>;
 
-export const GeminiDialog = ({
+export const OpenaiDialog = ({
   open,
   onOpenChange,
   onSubmit,
   defaultValues = {},
-}: GeminiDialogProps) => {
+}: OpenaiDialogProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,7 +72,7 @@ export const GeminiDialog = ({
     },
   });
 
-  const watchVariableName = form.watch("variableName") || "MyGemini";
+  const watchVariableName = form.watch("variableName") || "MyOpenai";
 
   const handleSubmit = (values: z.infer<typeof formSchema>) => {
     onSubmit(values);
@@ -94,7 +94,7 @@ export const GeminiDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Gemini Configuration</DialogTitle>
+          <DialogTitle>OpenAI Configuration</DialogTitle>
           <DialogDescription>
             Configure the AI model and prompts for this node.
           </DialogDescription>
@@ -111,7 +111,7 @@ export const GeminiDialog = ({
                 <FormItem>
                   <FormLabel>Variable Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="MyGemini" {...field} />
+                    <Input placeholder="MyOpenai" {...field} />
                   </FormControl>
 
                   <FormDescription>
@@ -146,7 +146,7 @@ export const GeminiDialog = ({
                     </SelectContent>
                   </Select>
                   <FormDescription>
-                    The Gemini model to use for the request.
+                    The OpenAI model to use for the request.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

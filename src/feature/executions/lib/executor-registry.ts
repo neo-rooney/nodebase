@@ -4,6 +4,7 @@ import { stripeTriggerExecutor } from "@/feature/triggers/components/stripe-trig
 import { NodeType } from "@/generated/prisma/enums";
 import { geminiExecutor } from "../components/gemini/executor";
 import { httpRequestExecutor } from "../components/http-request/executor";
+import { openaiExecutor } from "../components/opanai/executor";
 import type { NodeExecutor } from "../types";
 export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.MAMUAL_TRIGGER]: manualTriggerExecutor,
@@ -13,7 +14,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.STRIPE_TRIGGER]: stripeTriggerExecutor,
   [NodeType.GEMINI]: geminiExecutor as NodeExecutor,
   [NodeType.ANTHROPIC]: geminiExecutor as NodeExecutor,
-  [NodeType.OPENAI]: geminiExecutor as NodeExecutor,
+  [NodeType.OPENAI]: openaiExecutor as NodeExecutor,
 };
 
 export const getExecutor = (nodeType: NodeType): NodeExecutor => {

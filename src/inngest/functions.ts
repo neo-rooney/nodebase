@@ -6,8 +6,10 @@ import { httpRequestChannel } from "@/inngest/channels/http-request";
 import { manualTriggerChannel } from "@/inngest/channels/menual-trigger";
 import { stripeTriggerChannel } from "@/inngest/channels/stripe-trigger";
 import prisma from "@/lib/db";
+import { openaiExecutionChannel } from "./channels/openai";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
+
 export const executeWorkflow = inngest.createFunction(
   {
     id: "execute-workflow",
@@ -21,6 +23,7 @@ export const executeWorkflow = inngest.createFunction(
       googleFormTriggerChannel(),
       stripeTriggerChannel(),
       geminiExecutionChannel(),
+      openaiExecutionChannel(),
     ],
   },
   async ({ event, step, publish }) => {
