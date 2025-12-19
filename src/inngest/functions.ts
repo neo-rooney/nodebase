@@ -1,5 +1,6 @@
 import { NonRetriableError } from "inngest";
 import { getExecutor } from "@/feature/executions/lib/executor-registry";
+import { anthropicExecutionChannel } from "@/inngest/channels/anthropic";
 import { geminiExecutionChannel } from "@/inngest/channels/gemini";
 import { googleFormTriggerChannel } from "@/inngest/channels/google-form-trigger";
 import { httpRequestChannel } from "@/inngest/channels/http-request";
@@ -23,6 +24,7 @@ export const executeWorkflow = inngest.createFunction(
       googleFormTriggerChannel(),
       stripeTriggerChannel(),
       geminiExecutionChannel(),
+      anthropicExecutionChannel(),
       openaiExecutionChannel(),
     ],
   },

@@ -68,6 +68,12 @@ const executionNodes: NodeTypeOption[] = [
     description: "Uses OpenAI to generate text. Good for generating text.",
     icon: "/logos/openai.svg",
   },
+  {
+    type: NodeType.ANTHROPIC,
+    label: "Anthropic",
+    description: "Uses Anthropic to generate text. Good for generating text.",
+    icon: "/logos/anthropic.svg",
+  },
 ];
 
 interface NodeSelectorProps {
