@@ -32,6 +32,13 @@ const triggerNodes: NodeTypeOption[] = [
       "Runs the flow on clicking a button. Good for getting started quickly.",
     icon: MousePointerIcon,
   },
+  {
+    type: NodeType.GOOGLE_FORM_TRIGGER,
+    label: "When a Google Form is submitted",
+    description:
+      "Runs the flow when a Google Form is submitted. Good for getting started quickly.",
+    icon: "/logos/googleform.svg",
+  },
 ];
 
 const executionNodes: NodeTypeOption[] = [
@@ -122,6 +129,8 @@ export function NodeSelector({
               <div className="flex items-center gap-6 w-full overflow-hidden">
                 {typeof Icon === "string" ? (
                   <Image
+                    width={20}
+                    height={20}
                     src={Icon}
                     alt={nodeType.label}
                     className="size-5 object-contain rounded-sm"
@@ -153,6 +162,8 @@ export function NodeSelector({
               <div className="flex items-center gap-6 w-full overflow-hidden">
                 {typeof Icon === "string" ? (
                   <Image
+                    width={20}
+                    height={20}
                     src={Icon}
                     alt={nodeType.label}
                     className="size-5 object-contain rounded-sm"

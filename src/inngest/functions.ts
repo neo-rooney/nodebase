@@ -1,5 +1,6 @@
 import { NonRetriableError } from "inngest";
 import { getExecutor } from "@/feature/executions/lib/executor-registry";
+import { googleFormTriggerChannel } from "@/inngest/channels/google-form-trigger";
 import { httpRequestChannel } from "@/inngest/channels/http-request";
 import { manualTriggerChannel } from "@/inngest/channels/menual-trigger";
 import prisma from "@/lib/db";
@@ -13,7 +14,11 @@ export const executeWorkflow = inngest.createFunction(
   },
   {
     event: "workflows/execute.workflow",
-    channels: [httpRequestChannel(), manualTriggerChannel()],
+    channels: [
+      httpRequestChannel(),
+      manualTriggerChannel(),
+      googleFormTriggerChannel(),
+    ],
   },
   async ({ event, step, publish }) => {
     const workflowId = event.data.workflowId;
@@ -36,7 +41,7 @@ export const executeWorkflow = inngest.createFunction(
       return topologicalSort(workflow.nodes, workflow.connections);
     });
 
-    let context = event.data.context || {};
+    let context = event.data.initialData || {};
 
     for (const node of sortedNodes) {
       const executor = getExecutor(node.type);
