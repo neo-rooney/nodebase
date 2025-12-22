@@ -14,16 +14,17 @@ datasource db {
 }
 
 model User {
-  id            String     @id
+  id            String       @id
   name          String
   email         String
-  emailVerified Boolean    @default(false)
+  emailVerified Boolean      @default(false)
   image         String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   sessions      Session[]
   accounts      Account[]
   workflows     Workflow[]
+  credentials   Credential[]
 
   @@unique([email])
   @@map("user")
@@ -114,6 +115,9 @@ model Node {
   outputConnections Connection[] @relation("FromNode")
   inputConnections  Connection[] @relation("ToNode")
 
+  credentialId String?
+  credential   Credential? @relation(fields: [credentialId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -136,4 +140,25 @@ model Connection {
   updatedAt DateTime @updatedAt
 
   @@unique([fromNodeId, toNodeId, fromOutput, toInput])
+}
+
+enum CredentialType {
+  ANTHROPIC
+  GEMINI
+  OPENAI
+}
+
+model Credential {
+  id    String         @id @default(cuid())
+  type  CredentialType
+  name  String
+  value String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  nodes Node[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
