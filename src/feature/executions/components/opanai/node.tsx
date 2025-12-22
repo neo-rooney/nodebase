@@ -16,6 +16,7 @@ type OpenaiNodeData = {
   model?: (typeof AVAILABLE_MODELS)[number];
   systemPrompt?: string;
   userPrompt?: string;
+  credentialId?: string;
 };
 
 type OpenaiNodeType = Node<OpenaiNodeData>;
@@ -63,7 +64,7 @@ export const OpenaiNode = memo((props: NodeProps<OpenaiNodeType>) => {
         {...props}
         id={props.id}
         icon="/logos/openai.svg"
-        name="Gemini"
+        name="OpenAI"
         description={description}
         onSettings={handleOpenSettings}
         onDoubleClick={handleOpenSettings}

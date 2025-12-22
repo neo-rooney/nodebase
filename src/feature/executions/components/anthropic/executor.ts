@@ -4,6 +4,7 @@ import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import type { NodeExecutor } from "@/feature/executions/types";
 import { anthropicExecutionChannel } from "@/inngest/channels/anthropic";
+import prisma from "@/lib/db";
 import type { AVAILABLE_MODELS } from "./dialog";
 
 Handlebars.registerHelper("json", (context) => {
@@ -17,6 +18,7 @@ type AnthropicData = {
   model: (typeof AVAILABLE_MODELS)[number];
   systemPrompt?: string;
   userPrompt: string;
+  credentialId: string;
 };
 
 export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
@@ -58,12 +60,31 @@ export const anthropicExecutor: NodeExecutor<AnthropicData> = async ({
 
   const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
+  if (!data.credentialId) {
+    await publish(
+      anthropicExecutionChannel().status({
+        nodeId,
+        status: "error",
+      }),
+    );
+    throw new NonRetriableError("Anthropic node: No credential ID configured");
+  }
+
   try {
-    //TODO: 키값 유저입력으로 추후 변경
-    const credentialValue = process.env.ANTHROPIC_API_KEY;
+    const credential = await step.run("get-credential", async () => {
+      return prisma.credential.findUnique({
+        where: {
+          id: data.credentialId,
+        },
+      });
+    });
+
+    if (!credential) {
+      throw new NonRetriableError("Anthropic node: Credential not found");
+    }
 
     const anthropic = createAnthropic({
-      apiKey: credentialValue,
+      apiKey: credential.value,
     });
 
     const { steps } = await step.ai.wrap(

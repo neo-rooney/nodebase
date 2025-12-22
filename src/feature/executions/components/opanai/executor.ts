@@ -4,6 +4,7 @@ import Handlebars from "handlebars";
 import { NonRetriableError } from "inngest";
 import type { NodeExecutor } from "@/feature/executions/types";
 import { openaiExecutionChannel } from "@/inngest/channels/openai";
+import prisma from "@/lib/db";
 import type { AVAILABLE_MODELS } from "./dialog";
 
 Handlebars.registerHelper("json", (context) => {
@@ -17,6 +18,7 @@ type OpenaiData = {
   model: (typeof AVAILABLE_MODELS)[number];
   systemPrompt?: string;
   userPrompt: string;
+  credentialId: string;
 };
 
 export const openaiExecutor: NodeExecutor<OpenaiData> = async ({
@@ -39,7 +41,7 @@ export const openaiExecutor: NodeExecutor<OpenaiData> = async ({
         status: "error",
       }),
     );
-    throw new NonRetriableError("Gemini node: No variable name configured");
+    throw new NonRetriableError("OpenAI node: No variable name configured");
   }
 
   const systemPrompt = data.systemPrompt
@@ -53,17 +55,36 @@ export const openaiExecutor: NodeExecutor<OpenaiData> = async ({
         status: "error",
       }),
     );
-    throw new NonRetriableError("Gemini node: No user prompt configured");
+    throw new NonRetriableError("OpenAI node: No user prompt configured");
   }
 
   const userPrompt = Handlebars.compile(data.userPrompt)(context);
 
+  if (!data.credentialId) {
+    await publish(
+      openaiExecutionChannel().status({
+        nodeId,
+        status: "error",
+      }),
+    );
+    throw new NonRetriableError("OpenAI node: No credential ID configured");
+  }
+
   try {
-    //TODO: 키값 유저입력으로 추후 변경
-    const credentialValue = process.env.OPENAI_API_KEY;
+    const credential = await step.run("get-credential", async () => {
+      return prisma.credential.findUnique({
+        where: {
+          id: data.credentialId,
+        },
+      });
+    });
+
+    if (!credential) {
+      throw new NonRetriableError("OpenAI node: Credential not found");
+    }
 
     const openai = createOpenAI({
-      apiKey: credentialValue,
+      apiKey: credential.value,
     });
 
     const { steps } = await step.ai.wrap("openai-generate-text", generateText, {

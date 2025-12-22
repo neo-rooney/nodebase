@@ -130,7 +130,7 @@ export const credentialsRouter = createTRPCRouter({
     .input(z.object({ type: z.enum(CredentialType) }))
     .query(({ ctx, input }) => {
       const { type } = input;
-      return prisma.credential.findFirst({
+      return prisma.credential.findMany({
         where: {
           type,
           userId: ctx.auth.user.id,
