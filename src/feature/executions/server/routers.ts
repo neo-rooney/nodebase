@@ -14,6 +14,14 @@ export const executionsRouter = createTRPCRouter({
             userId: ctx.auth.user.id,
           },
         },
+        include: {
+          workflow: {
+            select: {
+              name: true,
+              id: true,
+            },
+          },
+        },
       });
     }),
   getMany: protectedProcedure
