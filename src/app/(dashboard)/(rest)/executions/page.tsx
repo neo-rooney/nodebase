@@ -1,6 +1,12 @@
 import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import {
+  ExecutionsContainer,
+  ExecutionsErrorView,
+  ExecutionsList,
+  ExecutionsLoadingView,
+} from "@/feature/executions/components/executions";
 import { executionsParamsLoader } from "@/feature/executions/server/params-loader";
 import { prefetchExecutions } from "@/feature/executions/server/prefetch";
 import { requireAuth } from "@/lib/auth-utils";
@@ -16,13 +22,15 @@ const Page = async ({ searchParams }: Props) => {
   prefetchExecutions(params);
 
   return (
-    <HydrateClient>
-      <ErrorBoundary fallback={<div>Error</div>}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <div>TODO</div>
-        </Suspense>
-      </ErrorBoundary>
-    </HydrateClient>
+    <ExecutionsContainer>
+      <HydrateClient>
+        <ErrorBoundary fallback={<ExecutionsErrorView />}>
+          <Suspense fallback={<ExecutionsLoadingView />}>
+            <ExecutionsList />
+          </Suspense>
+        </ErrorBoundary>
+      </HydrateClient>
+    </ExecutionsContainer>
   );
 };
 
