@@ -1,6 +1,12 @@
 import type { SearchParams } from "nuqs/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import {
+  CredentialsContainer,
+  CredentialsErrorView,
+  CredentialsList,
+  CredentialsLoadingView,
+} from "@/feature/credentials/components/credentials";
 import { credentialsParamsLoader } from "@/feature/credentials/server/params-loader";
 import { prefetchCredentials } from "@/feature/credentials/server/prefetch";
 import { requireAuth } from "@/lib/auth-utils";
@@ -16,13 +22,15 @@ const Page = async ({ searchParams }: Props) => {
   prefetchCredentials(params);
 
   return (
-    <HydrateClient>
-      <ErrorBoundary fallback={<div>Error</div>}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <div>Credentials</div>
-        </Suspense>
-      </ErrorBoundary>
-    </HydrateClient>
+    <CredentialsContainer>
+      <HydrateClient>
+        <ErrorBoundary fallback={<CredentialsErrorView />}>
+          <Suspense fallback={<CredentialsLoadingView />}>
+            <CredentialsList />
+          </Suspense>
+        </ErrorBoundary>
+      </HydrateClient>
+    </CredentialsContainer>
   );
 };
 
