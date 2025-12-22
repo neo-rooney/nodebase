@@ -3,6 +3,7 @@ import { manualTriggerExecutor } from "@/feature/triggers/components/menual-trig
 import { stripeTriggerExecutor } from "@/feature/triggers/components/stripe-trigger/executor";
 import { NodeType } from "@/generated/prisma/enums";
 import { anthropicExecutor } from "../components/anthropic/executor";
+import { discordExecutor } from "../components/discord/executor";
 import { geminiExecutor } from "../components/gemini/executor";
 import { httpRequestExecutor } from "../components/http-request/executor";
 import { openaiExecutor } from "../components/opanai/executor";
@@ -16,6 +17,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.GEMINI]: geminiExecutor as NodeExecutor,
   [NodeType.ANTHROPIC]: anthropicExecutor as NodeExecutor,
   [NodeType.OPENAI]: openaiExecutor as NodeExecutor,
+  [NodeType.DISCORD]: discordExecutor as NodeExecutor,
 };
 
 export const getExecutor = (nodeType: NodeType): NodeExecutor => {

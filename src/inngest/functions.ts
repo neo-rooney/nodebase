@@ -7,6 +7,7 @@ import { httpRequestChannel } from "@/inngest/channels/http-request";
 import { manualTriggerChannel } from "@/inngest/channels/menual-trigger";
 import { stripeTriggerChannel } from "@/inngest/channels/stripe-trigger";
 import prisma from "@/lib/db";
+import { discordExecutionChannel } from "./channels/discord";
 import { openaiExecutionChannel } from "./channels/openai";
 import { inngest } from "./client";
 import { topologicalSort } from "./utils";
@@ -26,6 +27,7 @@ export const executeWorkflow = inngest.createFunction(
       geminiExecutionChannel(),
       anthropicExecutionChannel(),
       openaiExecutionChannel(),
+      discordExecutionChannel(),
     ],
   },
   async ({ event, step, publish }) => {
