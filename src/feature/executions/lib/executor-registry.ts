@@ -4,6 +4,7 @@ import { stripeTriggerExecutor } from "@/feature/triggers/components/stripe-trig
 import { NodeType } from "@/generated/prisma/enums";
 import { anthropicExecutor } from "../components/anthropic/executor";
 import { discordExecutor } from "../components/discord/executor";
+import { slackExecutor } from "../components/slack/executor";
 import { geminiExecutor } from "../components/gemini/executor";
 import { httpRequestExecutor } from "../components/http-request/executor";
 import { openaiExecutor } from "../components/opanai/executor";
@@ -18,6 +19,7 @@ export const executorRegistry: Record<NodeType, NodeExecutor> = {
   [NodeType.ANTHROPIC]: anthropicExecutor as NodeExecutor,
   [NodeType.OPENAI]: openaiExecutor as NodeExecutor,
   [NodeType.DISCORD]: discordExecutor as NodeExecutor,
+  [NodeType.SLACK]: slackExecutor as NodeExecutor,
 };
 
 export const getExecutor = (nodeType: NodeType): NodeExecutor => {
