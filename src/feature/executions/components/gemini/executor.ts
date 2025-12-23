@@ -5,6 +5,7 @@ import { NonRetriableError } from "inngest";
 import type { NodeExecutor } from "@/feature/executions/types";
 import { geminiExecutionChannel } from "@/inngest/channels/gemini";
 import prisma from "@/lib/db";
+import { decrypt } from "@/lib/encryption";
 import type { AVAILABLE_MODELS } from "./dialog";
 
 Handlebars.registerHelper("json", (context) => {
@@ -86,7 +87,7 @@ export const geminiExecutor: NodeExecutor<GeminiData> = async ({
     }
 
     const google = createGoogleGenerativeAI({
-      apiKey: credential.value,
+      apiKey: decrypt(credential.value),
     });
 
     const { steps } = await step.ai.wrap("gemini-generate-text", generateText, {
